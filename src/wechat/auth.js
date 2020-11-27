@@ -27,13 +27,43 @@ module.exports = () => {
       if(sha1Str === signature) {
       
         const xmlData = await getUserDataAsync(req)
-        // console.log(xmlData)
+        
         const jsData = await parseXmlAsync(xmlData)
-        // console.log(jsData)
+        
         const message = formatData(jsData)
-        console.log(message)
+        
+        /**
+         * { ToUserName: 'gh_bcbac8e05096',
+            FromUserName: 'oVMez5jqL1NwrpRlZ6biSE9NYoIE',
+            CreateTime: '1606471448',
+            MsgType: 'text',
+            Content: '8',
+            MsgId: '22999138684859327' }
+         */
 
-        res.send('')
+        let content = '听不到，说大声点儿~'
+        if(message.MsgType === 'text') {
+          if(message.Content === '1') {
+            content = '年轻人不讲武德'
+          }else if(message.Content === '2') {
+            content = '耗之为汁'
+          }else if(message.Content.includes('羊')) {
+            content = '找你ba干嘛'
+          }
+        }
+
+        const resXml = `
+        <xml>
+          <ToUserName><![CDATA[${message.FromUserName}]]></ToUserName>
+          <FromUserName><![CDATA[${message.ToUserName}]]></FromUserName>
+          <CreateTime>${ Date.now() }</CreateTime>
+          <MsgType><![CDATA[text]]></MsgType>
+          <Content><![CDATA[${ content }]]></Content>
+        </xml>`
+
+        res.send(resXml)
+
+        // res.send('')
 
       }else {
         res.send('error')
