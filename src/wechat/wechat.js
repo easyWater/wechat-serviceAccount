@@ -14,6 +14,7 @@ const { writeFile, readFile } = require('fs')
 
 const { appID, appsecret } = require('../config/index')
 const ACCESS_TOKEN_URL = './access_token.txt'
+const menu = require('./menu')
 
 class Wechat {
 
@@ -96,7 +97,7 @@ class Wechat {
     }
     
     //读取本地文件
-    return this.readAccessToken().then(res => {
+    return this.readAccessToken().then(async res => {
       //有文件,access_token 是否过期
       if(this.isValidAccessToken(res)) {
         // 未过期
@@ -109,7 +110,7 @@ class Wechat {
   
       }
   
-    }).catch(err => {
+    }).catch(async err => {
       //没有文件,请求access_token，保存在本地，直接使用
       const res = await this.getAccessToken()
       await this.saveAccessToken(res)
@@ -122,5 +123,49 @@ class Wechat {
     })
     
   }
+
+  /**
+   * 创建自定义菜单
+   */
+  createMenu(menu) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const data = await this.fetchAccessToken()
+        const url = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${data.access_token}`
+
+        const result = await axios({method: 'post', url, data: menu})
+        resolve(result.data)
+      }catch(e) {
+        reject(`createMenu出错 ${e}`)
+      }
+    })
+  }
+
+  /**
+   * 删除自定义菜单
+   */
+  deleteMenu() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const data = await this.fetchAccessToken() 
+        const url = `https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=${data.access_token}`
+
+        const result = await axios({method: 'get', url})
+        resolve(result.data)
+      } catch(e) {
+        reject(`deleteMenu出错 ${e}`)
+      }
+    })
+  }
   
 }
+
+(async () => {
+  const w = new Wechat()
+
+  // 先删除菜单再创建
+  let result = await w.deleteMenu()
+  console.log('删除菜单：', result)
+  result = await w.createMenu(menu)
+  console.log('创建菜单：', result)
+})()
