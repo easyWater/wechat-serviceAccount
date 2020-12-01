@@ -1,4 +1,6 @@
 const { parseString } = require('xml2js')
+const { writeFile, readFile } = require('fs')
+const { resolve } = require('path')
 
 module.exports = {
 
@@ -43,6 +45,38 @@ module.exports = {
     }
 
     return message
+  },
+
+  writeFileAsync(data, fileName) {
+
+    const filePath = resolve(__dirname, fileName)
+
+    return new Promise((resolve, reject) => {
+      writeFile(filePath, JSON.stringify(data), err => {
+        if(!err) {
+          console.log('保存成功')
+          resolve()
+        }else {
+          reject('writeFileAsync出错：', err)
+        }
+      })
+    })
+  },
+
+  readFileAsync(fileName) {
+
+    const filePath = resolve(__dirname, fileName)
+
+    return new Promise((resolve, reject) => {
+      readFile(filePath, (err, data) => {
+        if(!err) {
+          console.log('读取成功')
+          resolve(JSON.parse(data))
+        }else {
+          reject('readFileAsync出错：', err)
+        }
+      })
+    })
   }
 
 }
