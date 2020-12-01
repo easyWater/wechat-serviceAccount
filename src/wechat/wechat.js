@@ -227,15 +227,17 @@ class Wechat {
   
 }
 
-(async () => {
-  const w = new Wechat()
+// (async () => {
+//   const w = new Wechat()
 
-  // 先删除菜单再创建
-  // let result = await w.deleteMenu()
-  // console.log('删除菜单：', result)
-  // result = await w.createMenu(menu)
-  // console.log('创建菜单：', result)
+//   // 先删除菜单再创建
+//   // let result = await w.deleteMenu()
+//   // console.log('删除菜单：', result)
+//   // result = await w.createMenu(menu)
+//   // console.log('创建菜单：', result)
 
-  const res = await w.fetchTicket()
-  // console.log('fetchTicket：', res)
-})()
+//   const res = await w.fetchTicket()
+//   // console.log('fetchTicket：', res)
+// })()
+
+module.exports = Wechat
