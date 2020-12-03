@@ -231,12 +231,12 @@ class Wechat {
 //   const w = new Wechat()
 
 //   // 先删除菜单再创建
-//   // let result = await w.deleteMenu()
-//   // console.log('删除菜单：', result)
-//   // result = await w.createMenu(menu)
-//   // console.log('创建菜单：', result)
+//   let result = await w.deleteMenu()
+//   console.log('删除菜单：', result)
+//   result = await w.createMenu(menu)
+//   console.log('创建菜单：', result)
 
-//   const res = await w.fetchTicket()
+//   // const res = await w.fetchTicket()
 //   // console.log('fetchTicket：', res)
 // })()
 

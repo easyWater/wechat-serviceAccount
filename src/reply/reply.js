@@ -20,9 +20,6 @@ module.exports = message => {
       content = '找你ba干嘛'
     }
     
-  }else if(message.MsgType === 'image') {
-    options.msgType = 'image'
-    options.mediaId = message.MediaId
   }else if(message.MsgType === 'voice') {
     options.msgType = 'voice'
     options.mediaId = message.MediaID
@@ -30,16 +27,25 @@ module.exports = message => {
   }else if(message.MsgType === 'event') {
     // 接收事件推送
     if(message.Event === 'subscribe') { //订阅事件的推送
-      content = '欢迎关注昂~'
+      content = `欢迎关注昂~
+      回复 首页 能看到电影预告片页面
+      回复 热门 能看到最新最热门的电影
+      回复 文本 查看指定的电影信息
+      回复 语音 查看指定的电影信息
+      也可点击下方菜单按钮，了解更多功能
+      `
     }else if(message.Event === 'unsubscribe') { //取消订阅事件的推送
       // 取消订阅，用户接收不到推送消息了
       console.log('无情取关~')
-    }else if(message.Event === 'LOCATION') {
-      // 上报地理位置事件
-      content = `纬度：${message.Latitude} 经度：${message.Longitude} 精度：${message.Precision}`
     }else if(message.Event === 'CLICK') {
       // 自定义菜单事件
-      content = `您点击了按钮：${message.EventKey}`
+      content = `您可以按照以下提示进行操作
+      回复 首页 能看到电影预告片页面
+      回复 热门 能看到最新最热门的电影
+      回复 文本 查看指定的电影信息
+      回复 语音 查看指定的电影信息
+      也可点击下方菜单按钮，了解更多功能
+      `
     }
   }
 
