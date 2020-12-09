@@ -4,6 +4,8 @@ const sha1 = require('sha1')
 const Wechat = require('../wechat/wechat')
 const { serverUrl } = require('../config/index')
 const reply = require('../reply')
+const db = require('../db')
+const Theaters = require('../model/Theaters')
 
 const Router = express.Router
 
@@ -13,6 +15,7 @@ const wechat = new Wechat()
 // 被动回复
 router.use(reply())
 
+// 搜索页
 router.get('/search', async (req, res) => {
 
   /**
@@ -44,5 +47,25 @@ router.get('/search', async (req, res) => {
   })
 })
 
+// 详情页
+router.get('/detail/:doubanId', async (req, res) => {
+  const { doubanId } = req.params
+  
+  // res.send('doubanId', doubanId)
+  // console.log('/detail/:doubanId', doubanId)
+
+  if(doubanId) {
+    // 根据doubanId查询数据并返回
+    
+    await db
+    const data = await Theaters.findOne({ 'doubanId': doubanId }, {_id: 0, __v: 0, createTime: 0, doubanId: 0})
+
+    res.render('detail', { data })
+
+  }else {
+    res.end('error')
+  }
+
+})
 
 module.exports = router

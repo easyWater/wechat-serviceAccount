@@ -52,7 +52,7 @@ module.exports = async () => {
 
     return res
   })
-  console.log(result)
+  // console.log(result)
 
   // 获取详情页中其他数据
   for(let i = 0; i < result.length; i++) {
@@ -87,7 +87,7 @@ module.exports = async () => {
     
   }
 
-  console.log(result)
+  // console.log(result)
 
   // 关闭浏览器
   await browser.close()

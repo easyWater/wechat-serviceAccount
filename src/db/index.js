@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 module.exports = new Promise((resolve, reject) => {
+  mongoose.set('useCreateIndex', true)
   // 连接数据库
   mongoose.connect('mongodb://localhost:27017/douban_movie', {useNewUrlParser: true, useUnifiedTopology: true})
   // 绑定事件监听

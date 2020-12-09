@@ -34,7 +34,7 @@ module.exports = () => {
         
         const message = formatData(jsData)
 
-        const options = reply(message)
+        const options = await reply(message)
         
         const resXml = template(options)
 

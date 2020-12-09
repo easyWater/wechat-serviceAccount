@@ -1,6 +1,9 @@
 // 根据用户发送的类型及内容设置被动回复
+const db = require('../db');
+const Theaters = require('../model/Theaters')
+const { serverUrl } = require('../config')
 
-module.exports = message => {
+module.exports = async message => {
 
   let options = {
     toUserName: message.FromUserName,
@@ -12,8 +15,24 @@ module.exports = message => {
   let content = '听不到，说大声点儿~'
   if(message.MsgType === 'text') {
     
-    if(message.Content === '1') {
-      content = '年轻人不讲武德'
+    if(message.Content === '热门') {
+      // 查询数据返回图文消息
+      
+      await db // 连接数据库
+      const data = await Theaters.find({}, {title: 1, summary: 1, posters: 1, doubanId: 1, _id: 0})
+      
+      options.msgType = 'news'
+      content = []
+
+      for(let i = 0; i < data.length; i++) {
+        content.push({
+          title: data[i].title,
+          description: data[i].summary,
+          picUrl: data[i].posters,
+          url: `${serverUrl}/detail/${data[i].doubanId}`, //详情地址
+        })
+      }
+      
     }else if(message.Content === '2') {
       content = '耗之为汁'
     }else if(message.Content.includes('羊')) {
