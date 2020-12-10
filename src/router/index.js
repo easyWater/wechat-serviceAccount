@@ -50,9 +50,6 @@ router.get('/search', async (req, res) => {
 // 详情页
 router.get('/detail/:doubanId', async (req, res) => {
   const { doubanId } = req.params
-  
-  // res.send('doubanId', doubanId)
-  // console.log('/detail/:doubanId', doubanId)
 
   if(doubanId) {
     // 根据doubanId查询数据并返回

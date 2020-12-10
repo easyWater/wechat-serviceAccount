@@ -12,7 +12,8 @@ module.exports = async message => {
     msgType:'text',
   }
 
-  let content = '听不到，说大声点儿~'
+  let content = '听不到，大声点~'
+  
   if(message.MsgType === 'text') {
     
     if(message.Content === '热门') {
@@ -33,24 +34,62 @@ module.exports = async message => {
         })
       }
       
-    }else if(message.Content === '2') {
-      content = '耗之为汁'
-    }else if(message.Content.includes('羊')) {
-      content = '找你ba干嘛'
+    }else if(message.Content === '首页') {
+      content = '首页'
+    }else {
+      // 关键词搜索 message.Content
+
+      await db // 连接数据库
+      const data = await Theaters.find({'title': {$regex: eval("/"+ message.Content +"/i")}}, {title: 1, summary: 1, posters: 1, doubanId: 1, _id: 0})
+
+      if(data.length) {
+        options.msgType = 'news'
+        content = []
+
+        for(let i = 0; i < data.length; i++) {
+          content.push({
+            title: data[i].title,
+            description: data[i].summary,
+            picUrl: data[i].posters,
+            url: `${serverUrl}/detail/${data[i].doubanId}`, //详情地址
+          })
+        }
+      }else {
+        content = '暂时没有找到你要的信息~'
+      }
+      
     }
     
-  }else if(message.MsgType === 'voice') {
-    options.msgType = 'voice'
-    options.mediaId = message.MediaID
-    console.log('识别语音消息：', message.Recognition)
+  }else if(message.MsgType === 'voice') { //语音搜索
+
+    await db // 连接数据库
+    const data = await Theaters.find({'title': {$regex: eval("/"+ message.Recognition +"/i")}}, {title: 1, summary: 1, posters: 1, doubanId: 1, _id: 0})
+    
+    if(data.length) {
+      options.msgType = 'news'
+      content = []
+
+      for(let i = 0; i < data.length; i++) {
+        content.push({
+          title: data[i].title,
+          description: data[i].summary,
+          picUrl: data[i].posters,
+          url: `${serverUrl}/detail/${data[i].doubanId}`, //详情地址
+        })
+      }
+    }else {
+      content = '暂时没有找到你要的信息~'
+    }
+    
+
   }else if(message.MsgType === 'event') {
     // 接收事件推送
     if(message.Event === 'subscribe') { //订阅事件的推送
       content = `欢迎关注昂~
-      回复 首页 能看到电影预告片页面
-      回复 热门 能看到最新最热门的电影
-      回复 文本 查看指定的电影信息
-      回复 语音 查看指定的电影信息
+      回复 首页 查看电影预告片
+      回复 热门 查看最新最热门的电影
+      回复 文本 搜索电影信息
+      回复 语音 搜索电影信息
       也可点击下方菜单按钮，了解更多功能
       `
     }else if(message.Event === 'unsubscribe') { //取消订阅事件的推送
@@ -59,12 +98,14 @@ module.exports = async message => {
     }else if(message.Event === 'CLICK') {
       // 自定义菜单事件
       content = `您可以按照以下提示进行操作
-      回复 首页 能看到电影预告片页面
-      回复 热门 能看到最新最热门的电影
-      回复 文本 查看指定的电影信息
-      回复 语音 查看指定的电影信息
+      回复 首页 查看电影预告片
+      回复 热门 查看最新最热门的电影
+      回复 文本 搜索电影信息
+      回复 语音 搜索电影信息
       也可点击下方菜单按钮，了解更多功能
       `
+    }else if(message.Event === 'LOCATION') { //上报地理位置
+      content = ''
     }
   }
 

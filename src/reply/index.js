@@ -15,18 +15,19 @@ module.exports = () => {
 
     const sha1Str = sha1([token, timestamp, nonce].sort().join(''))
 
-    if(req.method === 'GET') {// get请求验证服务器有效性
+    if(req.method === 'GET') {
 
       if(sha1Str === signature) {
-        res.send(echostr)
+        res.send(echostr) // get请求验证服务器有效性
       }else {
-        res.send('error')
+        // res.send('error')
+        next()
       }
 
     }else if(req.method === 'POST') { // post请求发送用户信息
 
       // 消息是否来自微信
-      if(sha1Str === signature) {
+      if(sha1Str === signature) { //被动回复
       
         const xmlData = await getUserDataAsync(req)
         
