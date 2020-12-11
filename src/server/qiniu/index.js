@@ -1,13 +1,10 @@
 const { nanoid } = require('nanoid')
 
-// const db = require('../../db')
 const Theaters = require('../../model/Theaters')
 const upload = require('./upload')
 
 module.exports = async () => {
-  // await db
   // 查询没有上传在七牛中的数据
-  // const movies = await Theaters.find({posterKey: {$in: ['', null, {$exists: false}]}})
   const movies = await Theaters.find({$or: [{posterKey: ''}, {posterKey: null} ,{posterKey: {$exists: false}}]})
   
   movies.forEach(async movie => {
