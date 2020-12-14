@@ -53,7 +53,11 @@ module.exports = async () => {
     const itemData = await page.evaluate(() => {
 
       const title = $('[property="v:itemreviewed"]').html() //标题
-      const director = $('[rel="v:directedBy"]').html() //导演
+      const directors = $('[rel="v:directedBy"]').html() //导演
+      // 海报图
+      const posters = $('[rel="v:image"]').attr('src')
+      // 豆瓣id
+      const doubanId = $('.a_show_login.lnk-sharing').attr('share-id')
 
       const $starrings = $('[rel="v:starring"]')
       let actors = [] //演员
@@ -67,30 +71,32 @@ module.exports = async () => {
         genres.push($genres[j].innerText)
       }
 
-      const runtime = $('[property="v:runtime"]').html() //片长
+      const duration = $('[property="v:runtime"]').html() //片长
       const summary = $('[property="v:summary"]').html().replace(/\s/g, '') // 简介
       const releaseDate = $('[property="v:initialReleaseDate"]')[0].innerText // 上映日期
 
-      const rating = $('[property="v:average"]').html() // 评分
+      const score = $('[property="v:average"]').html() // 评分
 
       const coverImg = $('.related-pic-video').css('background-image')
       let cover = ''
       if(coverImg) {
-        cover = $('.related-pic-video').css('background-image').replace('url(','').replace(')','') // 预告片头图
+        cover = $('.related-pic-video').css('background-image').replace('url("','').replace('")','')   // 预告片头图
       }
       
       const href = $('.related-pic-video').attr('href') // 预告片视频页地址
 
       return {
         title,
-        director,
+        directors,
         actors,
         genres,
-        runtime,
+        duration,
         summary,
         releaseDate,
-        rating,
+        score,
         cover,
+        posters,
+        doubanId,
         href
       }
     })
