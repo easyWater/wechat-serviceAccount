@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>预告片</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link href="https://cdn.bootcdn.net/ajax/libs/dplayer/1.9.1/DPlayer.min.css" rel="stylesheet">
   <style>
     .container {
       padding: 0;
@@ -46,7 +47,7 @@
           <% data.forEach(function(item, index) { %>
 
             <div class="card">
-              <img src="http://ql5foo390.hn-bkt.clouddn.com/<%= item.posterKey %>" class="card-img-top" alt="海报">
+              <img src="http://ql5foo390.hn-bkt.clouddn.com/<%= item.posterKey %>" data-coverkey="<%= item.coverKey %>" data-videokey="<%= item.videoKey %>" class="card-img-top" alt="海报">
               <div class="card-body">
                 <h5 class="card-title"><%= item.title %></h5>
                 <p class="card-text"><%= item.summary %></p>
@@ -86,7 +87,77 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div id="dplayer"></div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/dplayer/1.9.1/DPlayer.min.js"></script>
+  <script type="text/javascript">
+    $(function() {
+      
+      var dp = null // 播放器
+      var lastVideo = '' // 上次视频地址
+
+      // 弹窗关闭时，暂停视频
+      $('#myModal').on('hidden.bs.modal', function (e) { 
+        dp.pause()
+      })
+
+      // 点击海报事件
+      $('.card-img-top').click(function() {
+
+        // 显示弹窗
+        $('#myModal').modal('show')
+
+        //获取播放地址及头图
+        var video = $(this).data('videokey')
+        var cover = $(this).data('coverkey')
+        // console.log(document.getElementById('dplayer'))
+
+        if(!dp) { // 创建播放器          
+          dp = new DPlayer({
+            container: document.getElementById('dplayer'),
+            video: {
+              url: video,
+              pic: cover,
+              thumbnails: cover,
+            },
+            danmaku: {
+              id: '9E2E3368B56CDBB4',
+              api: 'https://api.prprpr.me/dplayer/',
+            },
+          });
+        }else { // 切换视频
+
+          if(lastVideo === video) { //无需切换，继续播放
+            dp.play()
+          }else { //切换其他视频
+            dp.switchVideo(
+              {
+                url: video,
+                pic: cover,
+              },
+              {
+                id: 'test',
+                api: 'https://api.prprpr.me/dplayer/',
+                maximum: 3000,
+                user: 'DIYgod',
+              }
+            );
+
+            lastVideo = video
+          }
+        }
+      })
+      
+    })
+  </script>
 </body>
 </html>
