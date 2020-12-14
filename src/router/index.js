@@ -6,6 +6,7 @@ const { serverUrl } = require('../config/index')
 const reply = require('../reply')
 const db = require('../db')
 const Theaters = require('../model/Theaters')
+const Trailers = require('../model/Trailers')
 
 const Router = express.Router
 
@@ -62,6 +63,16 @@ router.get('/detail/:doubanId', async (req, res) => {
   }else {
     res.end('error')
   }
+
+})
+
+// 预告片页
+router.get('/movie', async (req, res) => {
+  
+  await db
+  const data = await Trailers.find({}, {_id: 0, __v: 0})
+
+  res.render('movie', { data })
 
 })
 
