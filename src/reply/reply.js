@@ -35,7 +35,15 @@ module.exports = async message => {
       }
       
     }else if(message.Content === '首页') {
-      content = '首页'
+
+      options.msgType = 'news'
+      content = [{
+        title: '电影抢先看',
+        description: '这里有最新的电影资讯',
+        picUrl: 'https://img3.doubanio.com/dae/accounts/resources/19870c3/movie/assets/lg_movie_a12_2.png',
+        url: `${serverUrl}/movie`, //详情地址
+      }]
+
     }else {
       // 关键词搜索 message.Content
 

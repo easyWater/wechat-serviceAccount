@@ -20,7 +20,6 @@ module.exports = () => {
       if(sha1Str === signature) {
         res.send(echostr) // get请求验证服务器有效性
       }else {
-        // res.send('error')
         next()
       }
 
@@ -44,7 +43,7 @@ module.exports = () => {
         // res.send('')
 
       }else {
-        res.send('error')
+        next()
       }
 
     }else { // 其他请求方式不处理

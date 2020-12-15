@@ -7,6 +7,7 @@ const reply = require('../reply')
 const db = require('../db')
 const Theaters = require('../model/Theaters')
 const Trailers = require('../model/Trailers')
+const Danmus = require('../model/Danmus')
 
 const Router = express.Router
 
@@ -72,8 +73,59 @@ router.get('/movie', async (req, res) => {
   await db
   const data = await Trailers.find({}, {_id: 0, __v: 0})
 
-  res.render('movie', { data })
+  res.render('movie', { data, serverUrl })
 
+})
+
+// 获取弹幕
+router.get('/v3', async (req, res) => {
+
+  // 获取参数
+  const { id } = req.query
+
+  // 查询数据返回
+  let dataArr = []
+  const data = await Danmus.find({ doubanId: id })
+  data.forEach(item => {
+    dataArr.push([ item.time, item.type, item.color, item.author, item.text ])
+  })
+
+  // 响应
+  res.send({
+    code: 0,
+    data: dataArr
+  })
+})
+
+// 发送弹幕
+router.post('/v3', async (req, res) => {
+
+  // 获取参数
+  const { id, author, time, text, color, type } = await new Promise(resolve => {
+    let body = ''
+    req.on('data', data => {
+      body += data.toString()
+    }).on('end', () => {
+      resolve(JSON.parse(body))
+    })
+  })
+
+  // 存入库中
+  await Danmus.create({
+    doubanId: id,
+    author,
+    time,
+    text,
+    color,
+    type,
+  })
+
+  // 响应
+  res.send({
+    code: 0,
+    data: {}
+  })
+  
 })
 
 module.exports = router
