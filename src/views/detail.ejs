@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>detail</title>
+  <title>电影详情</title>
   <style>
     * {
       margin: 0;
@@ -112,7 +112,7 @@
           <p class="rating">
             <span>评分：</span>
             <strong><%= data.score %></strong>
-            <span class="ratingNum">52996人评价</span>
+            <!-- <span class="ratingNum">52996人评价</span> -->
           </p>
           <p class="meta">
             <%= data.duration %> / 
@@ -124,7 +124,7 @@
         </div>
         <div class="right">
           <a href="javascript: void(0)">
-            <img src="<%= data.posters %>" alt="<%= data.title %>">
+            <img src="http://ql5foo390.hn-bkt.clouddn.com/<%= data.posterKey %>" alt="<%= data.title %>">
           </a>
         </div>
       </section>

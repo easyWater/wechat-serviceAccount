@@ -49,6 +49,24 @@ router.get('/search', async (req, res) => {
   })
 })
 
+// 根据条件搜电影
+router.get('/search_movie', async (req, res) => {
+  
+  // 取参
+  const { q } = req.query
+  
+  // 查询数据库
+  await db 
+  const list = await Theaters.find({'title': {$regex: eval("/"+ q +"/i")}}, {title: 1, score: 1, posterKey: 1, doubanId: 1, _id: 0})
+  
+  // 返回
+  res.send({
+    code: 0,
+    list
+  })
+
+})
+
 // 详情页
 router.get('/detail/:doubanId', async (req, res) => {
   const { doubanId } = req.params
