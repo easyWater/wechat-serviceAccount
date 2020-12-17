@@ -8,6 +8,11 @@
     2.2已过期
       重新请求 access_token，覆盖之前文件
 */
+const axios = require('axios')
+const querystring = require('querystring');
+const { resolve } = require('path')
+const { createReadStream, createWriteStream } = require('fs')
+const request = require('request')
 
 const api = require('../utils/api')
 const { appID, appsecret } = require('../config/index')
@@ -224,7 +229,58 @@ class Wechat {
     })
     
   }
-  
+
+  /**
+   * 上传临时素材
+   */
+  uploadTemporaryMedia(type, fileName) {
+    // 获取媒体文件的绝对路径
+    const filePath = resolve(__dirname, '../media', fileName)
+
+    return new Promise(async (resolve, reject) => {
+
+      try {
+        // 获取access_token
+        const { access_token } = this.fetchAccessToken()
+
+        const url = `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${access_token}&type=${type}`
+        const data = await axios.post(url, querystring.stringify(
+          {
+            media: createReadStream(filePath)
+          }
+        ))
+
+        resolve(data.data)
+      } catch(e) {
+        reject(`uploadTemporaryMedia错误：${e}`)
+      }
+        
+    })    
+  }
+
+  /**
+   * 获取临时素材
+   */
+  getTemporaryMedia(type, media_id, fileName) {
+    const filePath = resolve(__dirname, '../media', fileName)
+
+    return new Promise(async (resolve, reject) => {
+      try{
+        const { access_token } = this.fetchAccessToken() 
+
+        const url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${access_token}&media_id=${media_id}`
+        if(type === 'video') { //视频只支持http协议
+          url = url.replace('https', 'http')
+          const data = await axios.get(url)
+          resolve(data.data)
+        }else { //其他类型文件
+          request(url).pipe(createWriteStream(filePath)).once('close', resolve)
+        }
+      } catch(e) {
+        reject(`getTemporaryMedia出错：${e}`)
+      }
+    })
+  }
 }
 
 // (async () => {
