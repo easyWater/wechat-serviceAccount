@@ -10,7 +10,7 @@
 */
 const axios = require('axios')
 const querystring = require('querystring');
-const { resolve } = require('path')
+const { resolve, join } = require('path')
 const { createReadStream, createWriteStream } = require('fs')
 const request = require('request')
 
@@ -241,7 +241,7 @@ class Wechat {
 
       try {
         // 获取access_token
-        const { access_token } = this.fetchAccessToken()
+        const { access_token } = await this.fetchAccessToken()
 
         const url = `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${access_token}&type=${type}`
         const data = await axios.post(url, querystring.stringify(
@@ -266,7 +266,7 @@ class Wechat {
 
     return new Promise(async (resolve, reject) => {
       try{
-        const { access_token } = this.fetchAccessToken() 
+        const { access_token } = await this.fetchAccessToken() 
 
         const url = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=${access_token}&media_id=${media_id}`
         if(type === 'video') { //视频只支持http协议
@@ -278,6 +278,71 @@ class Wechat {
         }
       } catch(e) {
         reject(`getTemporaryMedia出错：${e}`)
+      }
+    })
+  }
+
+  /**
+   * 上传永久素材
+   * material: 当type为news时，该参数为图文消息配置对象，不为news时，该参数为文件名
+   */
+  uploadPermanentMedia(type, material, description) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { access_token } = await this.fetchAccessToken()
+
+        let options = {
+          method: 'post'
+        }
+
+        if(type === 'news') { //图文消息
+          options.url = `https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=${access_token}`
+          options.data = material
+        }else if(type === 'img') { //图文消息内的图片
+          options.url = `https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=${access_token}`
+          options.headers = { 'content-type': 'application/x-www-form-urlencoded' }
+          options.data = querystring.stringify({
+            media: createReadStream(join(__dirname, '../media', material))
+          })
+        }else { //其他
+          options.url = `https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=${access_token}&type=${type}`
+          options.headers = { 'content-type': 'application/x-www-form-urlencoded' }
+          options.data = querystring.stringify({
+            media: createReadStream(join(__dirname, '../media', material))
+          })
+
+          if(type === 'video') { //视频
+            options.data.description = description
+          }
+        }
+
+        const data = await axios(options)
+
+        resolve(data.data)
+      } catch(e) {
+        reject(`uploadPermanentMedia出错：${e}`)
+      }
+    })
+  }
+
+  /**
+   * 获取永久素材
+   */
+  getPermanentMedia(type, mediaId, fileName) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { access_token } = await this.fetchAccessToken()
+
+        const url = `https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=${access_token}`
+        if(type === 'news' || type === 'video'){ //图文消息或视频，返回JSON数据
+          const data = await axios.post(url, { media_id: mediaId })
+          resolve(data.data)
+        }else { //其他类型，返回文件流
+          request.post(url, {form: { media_id: mediaId }}).pipe(createWriteStream(join(__dirname, '../media', fileName))).once('close', resolve)
+        }
+        
+      }catch(e) {
+        reject(`getPermanentMedia出错：${e}`)
       }
     })
   }
