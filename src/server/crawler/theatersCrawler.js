@@ -28,7 +28,7 @@ module.exports = async () => {
     let res = []
 
     const $lists = $('#nowplaying>.mod-bd>.lists>li')
-    for(let i = 0; i < 8; i++) {
+    for(let i = 0; i < $lists.length; i++) {
       const title = $($lists[i]).data('title') //标题
       const score = $($lists[i]).data('score') //评分
       const duration = $($lists[i]).data('duration') //时长

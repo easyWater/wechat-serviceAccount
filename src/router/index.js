@@ -2,7 +2,7 @@ const express = require('express')
 const sha1 = require('sha1')
 
 const Wechat = require('../wechat/wechat')
-const { serverUrl } = require('../config/index')
+const { serverUrl, mediaUrl } = require('../config')
 const reply = require('../reply')
 const db = require('../db')
 const Theaters = require('../model/Theaters')
@@ -45,7 +45,8 @@ router.get('/search', async (req, res) => {
   res.render('search', {
     signature,
     noncestr,
-    timestamp
+    timestamp,
+    mediaUrl
   })
 })
 
@@ -77,7 +78,7 @@ router.get('/detail/:doubanId', async (req, res) => {
     await db
     const data = await Theaters.findOne({ 'doubanId': doubanId }, {_id: 0, __v: 0, createTime: 0, doubanId: 0})
 
-    res.render('detail', { data })
+    res.render('detail', { data, mediaUrl })
 
   }else {
     res.end('error')
@@ -91,7 +92,7 @@ router.get('/movie', async (req, res) => {
   await db
   const data = await Trailers.find({}, {_id: 0, __v: 0})
 
-  res.render('movie', { data, serverUrl })
+  res.render('movie', { data, serverUrl, mediaUrl })
 
 })
 

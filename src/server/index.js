@@ -7,23 +7,24 @@ const uploadQiniu = require('./qiniu');
 const Theaters = require('../model/Theaters');
 const Trailers = require('../model/Trailers');
 
-(async () => {
+
+module.exports = async () => {
   // 连接数据库
-  // await db;
+  await db;
 
   // 爬取热门数据
-  // const data = await theatersCrawler();
+  const theatersData = await theatersCrawler();
   // 将爬取的数据保存在数据库中
-  // await saveTheaters(data);
+  await saveTheaters(theatersData);
   // 将图片上传至七牛云
-  // await uploadQiniu('posterKey', Theaters)
+  await uploadQiniu('posterKey', Theaters)
 
   // 爬取预告片数据
-  // const data = await trailersCrawler()
+  const trailersData = await trailersCrawler()
   // 保存在数据库中
-  // await saveTrailers(data);  
+  await saveTrailers(trailersData);
   // 将图片视频上传至七牛云
-  // await uploadQiniu('posterKey', Trailers)
-  // await uploadQiniu('coverKey', Trailers)
-  // await uploadQiniu('videoKey', Trailers)
-})()
+  await uploadQiniu('posterKey', Trailers)
+  await uploadQiniu('coverKey', Trailers)
+  await uploadQiniu('videoKey', Trailers)
+}

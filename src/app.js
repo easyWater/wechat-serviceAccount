@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 
 const router = require('./router')
+const updateData = require('./server')
 
 const app = express()
 
@@ -13,4 +14,13 @@ app.set('view engine', 'ejs')
 // 路由
 app.use(router)
 
-app.listen(3000, () => console.log('服务器启动成功，3000端口开启~'))
+app.listen(3000, () => {
+  console.log('服务器启动成功，3000端口开启~')
+
+  // 间隔5天，获取/更新数据
+  setInterval(async () => {
+    await updateData()
+    console.log(`${ (new Date()).toLocaleString() }更新数据成功~`)
+  }, 5 * 60 * 1000)
+
+})

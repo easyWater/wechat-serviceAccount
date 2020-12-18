@@ -189,7 +189,7 @@
                         html += `<li class="item">
                           <a href="/detail/${item.doubanId}">
                             <div class="cover">
-                              <img src="http://ql5foo390.hn-bkt.clouddn.com/${item.posterKey}" alt="${item.title}" data-x="2000" data-y="2963" class="img-show" style="width: 100%">
+                              <img src="<%= mediaUrl %>/${item.posterKey}" alt="${item.title}" data-x="2000" data-y="2963" class="img-show" style="width: 100%">
                             </div>
                             <div class="info">
                               <h3>${item.title}</h3>

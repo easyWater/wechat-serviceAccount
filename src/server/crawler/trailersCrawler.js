@@ -28,16 +28,13 @@ module.exports = async () => {
     let res = []
     const $trs = $('.coming_list tbody tr')
     for(let i = 0; i < $trs.length; i++) {
-      const num = parseInt($($trs[i]).children().last().html())
-      if(num > 800) { //想看人数大于800
-        const link = $($trs[i]).find('a').attr('href') // 预告片详情地址
-        res.push(link)
-      }
+      const link = $($trs[i]).find('a').attr('href') // 预告片详情地址
+      res.push(link)
     }
 
     return res
   })
-  console.log(result)
+  // console.log(result)
 
   // 2.获取详情页中数据
   let movies = []
@@ -104,7 +101,7 @@ module.exports = async () => {
     movies.push(itemData)
     
   }
-  console.log(movies)
+  // console.log(movies)
 
   // 3.爬取预告片视频
   for(let i = 0; i < movies.length; i++) {
@@ -123,7 +120,7 @@ module.exports = async () => {
       })
     }
   }
-  console.log(movies)
+  // console.log(movies)
 
   // 关闭浏览器
   await browser.close()

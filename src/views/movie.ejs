@@ -55,7 +55,7 @@
           <% data.forEach(function(item, index) { %>
 
             <div class="card">
-              <img src="http://ql5foo390.hn-bkt.clouddn.com/<%= item.posterKey %>" data-id="<%= item.doubanId %>" data-coverkey="<%= item.coverKey %>" data-videokey="<%= item.videoKey %>" class="card-img-top" alt="海报">
+              <img src="<%= mediaUrl %>/<%= item.posterKey %>" data-id="<%= item.doubanId %>" data-coverkey="<%= item.coverKey %>" data-videokey="<%= item.videoKey %>" class="card-img-top" alt="海报">
               <div class="card-body">
                 <h5 class="card-title"><%= item.title %></h5>
                 <p class="card-text"><%= item.summary %></p>
@@ -133,9 +133,9 @@
           dp = new DPlayer({
             container: document.getElementById('dplayer'),
             video: {
-              url: `http://ql5foo390.hn-bkt.clouddn.com/${video}`,
-              pic: `http://ql5foo390.hn-bkt.clouddn.com/${cover}`,
-              thumbnails: `http://ql5foo390.hn-bkt.clouddn.com/${cover}`,
+              url: `<%= mediaUrl %>/${video}`,
+              pic: `<%= mediaUrl %>/${cover}`,
+              thumbnails: `<%= mediaUrl %>/${cover}`,
             },
             danmaku: {
               id: doubanId,
@@ -151,9 +151,9 @@
           }else { //切换其他视频
             dp.switchVideo(
               {
-                url: `http://ql5foo390.hn-bkt.clouddn.com/${video}`,
-                pic: `http://ql5foo390.hn-bkt.clouddn.com/${cover}`,
-                thumbnails: `http://ql5foo390.hn-bkt.clouddn.com/${cover}`,
+                url: `<%= mediaUrl %>/${video}`,
+                pic: `<%= mediaUrl %>/${cover}`,
+                thumbnails: `<%= mediaUrl %>/${cover}`,
               },
               {
                 id: doubanId,
