@@ -17,10 +17,10 @@ app.use(router)
 app.listen(3000, () => {
   console.log('服务器启动成功，3000端口开启~')
 
-  // 间隔5天，获取/更新数据
+  // 间隔1天，获取/更新一次数据
   setInterval(async () => {
     await updateData()
     console.log(`${ (new Date()).toLocaleString() }更新数据成功~`)
-  }, 5 * 60 * 1000)
+  }, 1 * 24 * 60 * 60 * 1000)
 
 })
